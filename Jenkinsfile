@@ -19,6 +19,7 @@ pipeline {
                     junit 'target/surefire-reports/**/*.xml'
                     jacoco exclusionPattern: '**/gate/gui/**'
                     findbugs excludePattern: '**/gate/resources/**', failedNewAll: '0', pattern: '**/findbugsXml.xml', unstableNewAll: '0', useStableBuildAsReference: true
+                    step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
                 }
             }
         }
