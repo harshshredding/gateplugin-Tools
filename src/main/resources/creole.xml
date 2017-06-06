@@ -1,0 +1,8 @@
+<?xml version="1.0"?>
+<!-- $Id: creole.xml 20134 2017-02-16 11:31:56Z markagreenwood $ -->
+<CREOLE-DIRECTORY>
+  
+  <REQUIRES GROUP="uk.ac.gate.plugins" ARTIFACT="annie" VERSION="8.5-SNAPSHOT"/>
+ 
+</CREOLE-DIRECTORY>
+
