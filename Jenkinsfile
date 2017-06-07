@@ -15,12 +15,14 @@ pipeline {
                 sh 'mvn -e site'
             }
             post {
-                success {
+                always {
                     junit 'target/surefire-reports/**/*.xml'
                     jacoco exclusionPattern: '**/gate/gui/**'
                     findbugs excludePattern: '**/gate/resources/**', failedNewAll: '0', pattern: '**/findbugsXml.xml', unstableNewAll: '0', useStableBuildAsReference: true
-                    step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
                     warnings canResolveRelativePaths: false, consoleParsers: [[parserName: 'Java Compiler (javac)'], [parserName: 'JavaDoc Tool']], defaultEncoding: 'UTF-8', excludePattern: "**/test/**", failedNewAll: '0', unstableNewAll: '0', useStableBuildAsReference: true
+                }
+                success {
+                    step([$class: 'JavadocArchiver', javadocDir: 'target/site/apidocs', keepAll: false])
                 }
             }
         }
