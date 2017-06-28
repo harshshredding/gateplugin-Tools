@@ -15,6 +15,7 @@ package gate.creole.annotransfer;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Serializable;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.ArrayList;
 import java.util.HashMap;
@@ -33,6 +34,7 @@ import gate.Resource;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
+import gate.creole.ResourceReference;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -57,7 +59,7 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
 
   private String outputASName, inputASName, textTagName;
 
-  private URL configURL;
+  private ResourceReference configURL;
 
   private Boolean copyAnnotations, transferAllUnlessFound;
 
@@ -253,11 +255,21 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
     annotationTypes = newTypes;
   }
 
-  public void setConfigURL(URL url) {
+  public void setConfigURL(ResourceReference url) {
     configURL = url;
   }
+  
+  @Deprecated
+  public void setConfigURL(URL url) {
+    try {
+      this.setConfigURL(new ResourceReference(url));
+    } catch (URISyntaxException e) {
+      throw new RuntimeException("Error converting URL to ResourceReference", e);
+    }
+  }
 
-  public URL getConfigURL() {
+
+  public ResourceReference getConfigURL() {
     return configURL;
   }
 

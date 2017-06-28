@@ -1,6 +1,8 @@
 package gate.creole.morph;
 
 
+import java.io.IOException;
+import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 
@@ -36,6 +38,7 @@ import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.CustomDuplication;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
+import gate.creole.ResourceReference;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -56,7 +59,7 @@ public class Morph
   private static final long serialVersionUID = 6964689654685956128L;
 
   /** File which contains rules to be processed */
-  protected URL rulesFile;
+  protected ResourceReference rulesFile;
 
   /** Instance of BaseWord class - English Morpher */
   protected Interpret interpret;
@@ -121,7 +124,12 @@ public class Morph
   
       fireStatusChanged("Reading Rule File...");
       // compile the rules
-      interpret.init(rulesFile);
+      try {
+        interpret.init(rulesFile.toURL());
+      } catch(IOException e) {
+        throw new ResourceInstantiationException(e);
+      }
+      
       fireStatusChanged("Morpher created!");
       fireProcessFinished();
     }
@@ -259,14 +267,23 @@ public class Morph
    * @param rulesFile - rule File name to be processed
    */
   @CreoleParameter(comment="File which defines rules for the morphological analysis", defaultValue="resources/morph/default.rul")
-  public void setRulesFile(URL rulesFile) {
+  public void setRulesFile(ResourceReference rulesFile) {
     this.rulesFile = rulesFile;
+  }
+  
+  @Deprecated
+  public void setRulesFile(URL rulesFile) {
+    try {
+      this.setRulesFile(new ResourceReference(rulesFile));
+    } catch(URISyntaxException e) {
+      throw new RuntimeException("Error converting URL to ResourceReference",e);
+    }
   }
 
   /**
    * Returns the document under process
    */
-  public URL getRulesFile() {
+  public ResourceReference getRulesFile() {
     return this.rulesFile;
   }
 

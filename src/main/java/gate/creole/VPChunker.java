@@ -13,12 +13,12 @@
  */
 package gate.creole;
 
+import java.util.List;
+
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.HiddenCreoleParameter;
 import gate.creole.ontology.Ontology;
-import java.net.URL;
-import java.util.List;
 
 /**
  * ANNIE VP Chunker module. It is actually a JAPE grammar; this class is here
@@ -42,7 +42,7 @@ public class VPChunker extends Transducer {
 
   @HiddenCreoleParameter
   @Override
-  public void setBinaryGrammarURL(URL grammar) {
+  public void setBinaryGrammarURL(ResourceReference grammar) {
     super.setBinaryGrammarURL(grammar);
   }
 

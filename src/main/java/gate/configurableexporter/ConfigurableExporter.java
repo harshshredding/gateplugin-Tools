@@ -19,6 +19,8 @@ package gate.configurableexporter;
 import java.io.BufferedReader;
 import java.io.InputStreamReader;
 import java.io.PrintStream;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
 
@@ -30,6 +32,7 @@ import gate.Utils;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
+import gate.creole.ResourceReference;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
@@ -84,13 +87,13 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
    * The ConfigurableExporter configuration file.
    * 
    */
-  private java.net.URL configFileURL;
+  private ResourceReference configFileURL;
 
   /**
    * The file to export the data to.
    * 
    */
-  private java.net.URL outputURL;
+  private URL outputURL;
 
   /**
    * The annotation set from which to draw the annotations.
@@ -115,11 +118,20 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
   @CreoleParameter(comment = "The configuration file specifying output format.",
       defaultValue="resources/configurableexporter/example.conf", 
       suffixes=".conf")
-  public void setConfigFileURL(java.net.URL configFileURL) {
+  public void setConfigFileURL(ResourceReference configFileURL) {
     this.configFileURL = configFileURL;
   }
 
-  public java.net.URL getConfigFileURL() {
+  @Deprecated
+  public void setConfigFileURL(URL configFileURL) {
+    try {
+      this.setConfigFileURL(new ResourceReference(configFileURL));
+    } catch (URISyntaxException e) {
+      throw new RuntimeException("Error converting URL to ResourceReference", e);
+    }
+  }
+  
+  public ResourceReference getConfigFileURL() {
     return configFileURL;
   }
 
@@ -140,7 +152,7 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
     }
   }
 
-  public java.net.URL getOutputURL() {
+  public URL getOutputURL() {
     return this.outputURL;
   }
 
