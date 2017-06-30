@@ -29,6 +29,7 @@ import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
+import java.util.concurrent.atomic.AtomicInteger;
 
 import javax.swing.tree.DefaultMutableTreeNode;
 
@@ -39,7 +40,7 @@ public class STreeNode extends DefaultMutableTreeNode {
   private static final String ADDEDSET = "TreeViewerTempAdded";
   private static final String REMOVEDSET = "TreeViewerTempRemoved";
 
-  static int nextID = 0;
+  private static final AtomicInteger nextID = new AtomicInteger(0);
 
   int level;            // level in the syntax tree
   int nodeID;           //ID of the node
@@ -52,7 +53,7 @@ public class STreeNode extends DefaultMutableTreeNode {
 
   public STreeNode(Annotation annot) {
     level = -1;
-    nodeID = nextID++;
+    nodeID = nextID.getAndIncrement();
     //span = annot.getSpans().getElementAt(0);
     //get the first span, there should be no others
     this.annot = annot;
@@ -62,14 +63,14 @@ public class STreeNode extends DefaultMutableTreeNode {
 
   public STreeNode(long start, long end) {
     level = -1;
-    nodeID = nextID++;
+    nodeID = nextID.getAndIncrement();
     this.start = start;
     this.end = end;
   }// public STreeNode(int start, int end)
 
   public STreeNode() {
     level = -1;
-    nodeID = nextID++;
+    nodeID = nextID.getAndIncrement();
     start = 0;
     end = 0;
   }// public STreeNode()
