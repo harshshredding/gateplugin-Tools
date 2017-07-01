@@ -40,7 +40,7 @@ public class STreeNode extends DefaultMutableTreeNode {
   private static final String ADDEDSET = "TreeViewerTempAdded";
   private static final String REMOVEDSET = "TreeViewerTempRemoved";
 
-  private static final AtomicInteger nextID = new AtomicInteger(0);
+  static final AtomicInteger nextID = new AtomicInteger(0);
 
   int level;            // level in the syntax tree
   int nodeID;           //ID of the node
