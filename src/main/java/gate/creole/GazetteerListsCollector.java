@@ -74,7 +74,7 @@ public class GazetteerListsCollector extends AbstractLanguageAnalyser {
     }
 
     // print out the stats in log files
-    printStats();
+    //printStats();
 
     // save the updated gazetteer lists now
     Map<LinearNode, GazetteerList> theLists =
