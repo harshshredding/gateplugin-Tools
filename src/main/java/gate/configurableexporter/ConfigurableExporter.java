@@ -23,6 +23,7 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 import java.util.List;
+import java.util.ArrayList;
 
 import gate.Annotation;
 import gate.AnnotationSet;
@@ -45,10 +46,10 @@ import gate.creole.metadata.RunTime;
  *  Configurable Exporter takes a configuration file specifying the
  *  format of the output file. The configuration file consists of a
  *  single line specifying output format with annotation names 
- *  surrounded by three angle brackets. E.g.<br>
+ *  surrounded by curly braces. E.g.<br>
  *  
  *  <pre>
- *  {index}, {class}, "{content}"
+ *  {Index}, {Class}, "{Content}"
  *  </pre>
  *  
  *  might result in an output file something like
@@ -62,7 +63,7 @@ import gate.creole.metadata.RunTime;
  *  Annotation features can also be specified using dot notation,
  *  for example;
  *  <pre>
- *  {index}, {instance.class}, "{content}"
+ *  {Index}, {Instance.class}, "{Content}"
  *  </pre>
  *  The PR is useful for outputting data for use in machine learning,
  *  and so each line is considered an "instance". Instance is specified
@@ -107,11 +108,9 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
    */
   private String instanceName;
   
-  private int numberOfAnnotationSlots = -1;
-  private int numberOfBridgeTextSlots = -1;
-  private static int maxslotsno = 50;
-  private String[][] annsToInsert = new String[maxslotsno][2];
-  private String[] bridges = new String[maxslotsno];
+  private ArrayList<String> annsToInsert = new ArrayList<String>();
+  private ArrayList<String> bridges = new ArrayList<String>();
+
 
   private PrintStream outputStream = System.out;
 
@@ -184,10 +183,8 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
 
   @Override
   public Resource init() throws ResourceInstantiationException {
-    this.numberOfAnnotationSlots = -1;
-    this.numberOfBridgeTextSlots = -1;
-    this.annsToInsert = new String[maxslotsno][2];
-    this.bridges = new String[maxslotsno];
+    this.annsToInsert = new ArrayList<String>();
+    this.bridges = new ArrayList<String>();
 
     if(configFileURL == null) throw new IllegalArgumentException(
         "No value provided for the configFileURL parameter");
@@ -199,12 +196,11 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
       if((strLine = in.readLine()) != null) {
         int upto = 0;
         int thisSlot = 0;
-        while(upto < strLine.length() && thisSlot < maxslotsno) {
+        while(upto < strLine.length()) {
           int startAnnoName = strLine.indexOf("{", upto);
           int endAnnoName = strLine.indexOf("}", upto);
           if(startAnnoName == -1 && endAnnoName == -1) {
-            bridges[thisSlot] = strLine.substring(upto, strLine.length());
-            this.numberOfBridgeTextSlots = thisSlot + 1;
+            bridges.add(strLine.substring(upto, strLine.length()));
             upto = strLine.length();
           } else if((startAnnoName == -1 && endAnnoName != -1)
               || (startAnnoName != -1 && endAnnoName == -1)) {
@@ -212,21 +208,10 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
                 "Failed to parse configuration file for Configurable " +
                 "Exporter.");
           } else {
-            bridges[thisSlot] = strLine.substring(upto, startAnnoName);
-            String thisAnnToInsert =
-                strLine.substring(startAnnoName + 1, endAnnoName);
-            String[] annotationTypeAndFeature = thisAnnToInsert.split("\\.", 2);
-            this.annsToInsert[thisSlot][0] = annotationTypeAndFeature[0];
-            if(annotationTypeAndFeature.length == 2) {
-              this.annsToInsert[thisSlot][1] = annotationTypeAndFeature[1];
-            } else {
-              this.annsToInsert[thisSlot][1] = null;
-            }
+            bridges.add(strLine.substring(upto, startAnnoName));
+            this.annsToInsert.add(strLine.substring(startAnnoName + 1, endAnnoName));
             upto = endAnnoName + 1;
-            this.numberOfAnnotationSlots = thisSlot + 1;
-            this.numberOfBridgeTextSlots = thisSlot + 1;
           }
-          thisSlot++;
         }
       }
     } catch(Exception e) {
@@ -254,17 +239,21 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
       // document.
       // Here, we find the first annotation of the right type for each slot in
       // the config file.
-      for(int i = 0; i < this.numberOfAnnotationSlots; i++) {
-        this.outputStream.print(this.bridges[i]);
+      for(int i = 0; i < this.annsToInsert.size(); i++) {
+        this.outputStream.print(this.bridges.get(i));
         // Check the annotation type isn't null
-        if(annsToInsert[i][0] != null) {
+        String[] bits = annsToInsert.get(i).split("\\.", 2);
+        String type = bits[0];
+        String feature = null;
+        if(bits.length>1) feature = bits[1];
+        if(type != null) {
           List<Annotation> typedAnnotations = Utils.inDocumentOrder(
-              inputAS.get(this.annsToInsert[i][0]));
+              inputAS.get(type));
 	 if(typedAnnotations.size() > 0) {
           Annotation annotationToPrint = typedAnnotations.get(0);
-          if(this.annsToInsert[i][1] != null) {
+          if(feature != null) {
             this.outputStream.print(annotationToPrint.getFeatures().get(
-                this.annsToInsert[i][1]));
+                feature));
           } else {
             // We have no feature to print so we will just print the text
             long startNode = annotationToPrint.getStartNode().getOffset();
@@ -281,8 +270,8 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
 	 }
         }
       }
-      if(this.numberOfBridgeTextSlots > this.numberOfAnnotationSlots) {
-        this.outputStream.print(this.bridges[this.numberOfBridgeTextSlots - 1]);
+      if(bridges.size() > annsToInsert.size()) {
+        this.outputStream.print(this.bridges.get(this.bridges.size()-1));
       }
       this.outputStream.println();
     } else {
@@ -299,15 +288,19 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
         // Here, we find the first annotation of the right type within the span
         // of the
         // instance annotation for each slot in the config file.
-        for(int i = 0; i < this.numberOfAnnotationSlots; i++) {
-          this.outputStream.print(this.bridges[i]);
+        for(int i = 0; i < this.annsToInsert.size(); i++) {
+          this.outputStream.print(this.bridges.get(i));
+          String[] bits = annsToInsert.get(i).split("\\.", 2);
+          String type = bits[0];
+          String feature = null;
+          if(bits.length>1) feature = bits[1];
           List<Annotation> typedAnnotations = Utils.inDocumentOrder(
-              inputAS.get(this.annsToInsert[i][0], startSearch, endSearch));
+              inputAS.get(type, startSearch, endSearch));
           if(typedAnnotations.size() > 0) {
             Annotation annotationToPrint = typedAnnotations.get(0);
-            if(this.annsToInsert[i][1] != null) {
+            if(feature != null) {
               this.outputStream.print(annotationToPrint.getFeatures().get(
-                  this.annsToInsert[i][1]));
+                 feature));
             } else {
               // We have no feature to print so we will just print the text
               long startNode = annotationToPrint.getStartNode().getOffset();
@@ -323,9 +316,8 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
             }            
           }
         }
-        if(this.numberOfBridgeTextSlots > this.numberOfAnnotationSlots) {
-          this.outputStream
-              .print(this.bridges[this.numberOfBridgeTextSlots - 1]);
+        if(bridges.size() > annsToInsert.size()) {
+          this.outputStream.print(this.bridges.get(this.bridges.size()-1));
         }
         this.outputStream.println();
       }
