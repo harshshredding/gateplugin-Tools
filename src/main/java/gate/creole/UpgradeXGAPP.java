@@ -284,61 +284,68 @@ public class UpgradeXGAPP extends AbstractResource implements ActionsPublisher {
 
   private List<Action> actions = null;
 
-  @SuppressWarnings("serial")
   @Override
   public List<Action> getActions() {
     if(actions != null) return actions;
 
     actions = new ArrayList<Action>();
 
-    actions.add(new AbstractAction("Upgrade XGapp", new ApplicationIcon(24,24)) {
-
-      @Override
-      public void actionPerformed(ActionEvent arg0) {
-
-        XJFileChooser fileChooser = MainFrame.getFileChooser();
-
-        ExtensionFileFilter filter = new ExtensionFileFilter(
-            "GATE Application files (.gapp, .xgapp)", ".gapp", ".xgapp");
-        fileChooser.addChoosableFileFilter(filter);
-        fileChooser.setFileFilter(filter);
-        fileChooser.setDialogTitle("Select an XGapp to Upgrade");
-        fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
-        fileChooser.setResource("lastapplication");
-
-        if(fileChooser.showOpenDialog(
-            MainFrame.getInstance()) != XJFileChooser.APPROVE_OPTION)
-          return;
-
-        File originalXGapp = fileChooser.getSelectedFile();
-
-        try {
-          SAXBuilder builder = new SAXBuilder(false);
-          Document doc = builder.build(originalXGapp);
-          List<UpgradePath> upgrades = suggest(doc);
-          for(UpgradePath upgrade : upgrades) {
-            System.out.println(upgrade);
-          }
-
-          upgrade(doc, upgrades);
-
-          if(!originalXGapp
-              .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
-            System.err.println("unable to back up existing xgapp");
-            return;
-          }
-
-          try (FileOutputStream out = new FileOutputStream(originalXGapp)) {
-            outputter.output(doc, out);
-          }
-        } catch(Exception e) {
-          e.printStackTrace();
-        }
-      }
-
-    });
+    actions.add(new UpgradeAction());
 
     return actions;
+  }
+
+  private static class UpgradeAction extends AbstractAction {
+
+    private static final long serialVersionUID = 5104380211427809600L;
+
+    public UpgradeAction() {
+      super("Upgrade XGapp", new ApplicationIcon(24, 24));
+    }
+
+    @Override
+    public void actionPerformed(ActionEvent arg0) {
+
+      XJFileChooser fileChooser = MainFrame.getFileChooser();
+
+      ExtensionFileFilter filter = new ExtensionFileFilter(
+          "GATE Application files (.gapp, .xgapp)", ".gapp", ".xgapp");
+      fileChooser.addChoosableFileFilter(filter);
+      fileChooser.setFileFilter(filter);
+      fileChooser.setDialogTitle("Select an XGapp to Upgrade");
+      fileChooser.setFileSelectionMode(JFileChooser.FILES_AND_DIRECTORIES);
+      fileChooser.setResource("lastapplication");
+
+      if(fileChooser.showOpenDialog(
+          MainFrame.getInstance()) != XJFileChooser.APPROVE_OPTION)
+        return;
+
+      File originalXGapp = fileChooser.getSelectedFile();
+
+      try {
+        SAXBuilder builder = new SAXBuilder(false);
+        Document doc = builder.build(originalXGapp);
+        List<UpgradePath> upgrades = suggest(doc);
+        for(UpgradePath upgrade : upgrades) {
+          System.out.println(upgrade);
+        }
+
+        upgrade(doc, upgrades);
+
+        if(!originalXGapp
+            .renameTo(new File(originalXGapp.getAbsolutePath() + ".bak"))) {
+          System.err.println("unable to back up existing xgapp");
+          return;
+        }
+
+        try (FileOutputStream out = new FileOutputStream(originalXGapp)) {
+          outputter.output(doc, out);
+        }
+      } catch(Exception e) {
+        e.printStackTrace();
+      }
+    }
+
   }
 
 }
