@@ -16,6 +16,9 @@
 	<groupId>uk.ac.gate.plugins</groupId>
 	<artifactId>tools</artifactId>
 	<version>8.5-SNAPSHOT</version>
+	
+	<name>Tools</name>
+	<description>A selection of processing resources commonly used to extend ANNIE</description>
 
 	<licenses>
 		<license>
