@@ -12,18 +12,19 @@
  */
 package gate.creole.annotransfer;
 
+import java.awt.event.ActionEvent;
 import java.io.BufferedReader;
 import java.io.IOException;
 import java.io.Serializable;
-import java.net.URISyntaxException;
-import java.net.URL;
 import java.util.ArrayList;
+import java.util.Collections;
 import java.util.HashMap;
 import java.util.Iterator;
 import java.util.List;
 import java.util.Map;
 
-import org.apache.commons.io.IOUtils;
+import javax.swing.AbstractAction;
+import javax.swing.Action;
 
 import gate.Annotation;
 import gate.AnnotationSet;
@@ -34,11 +35,14 @@ import gate.Resource;
 import gate.creole.AbstractLanguageAnalyser;
 import gate.creole.ExecutionException;
 import gate.creole.ResourceInstantiationException;
-import gate.creole.ResourceReference;
 import gate.creole.metadata.CreoleParameter;
 import gate.creole.metadata.CreoleResource;
 import gate.creole.metadata.Optional;
 import gate.creole.metadata.RunTime;
+import gate.gui.ActionsPublisher;
+import gate.gui.MainFrame;
+import gate.gui.SerialControllerEditor;
+import gate.swing.XJFileChooser;
 import gate.util.BomStrippingInputStreamReader;
 import gate.util.InvalidOffsetException;
 
@@ -51,15 +55,13 @@ import gate.util.InvalidOffsetException;
  * @author Mark A. Greenwood
  */
 @CreoleResource(name = "Annotation Set Transfer", comment = "Annotation set transfer component.", helpURL = "http://gate.ac.uk/userguide/sec:misc-creole:ast")
-public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
+public class AnnotationSetTransfer extends AbstractLanguageAnalyser implements ActionsPublisher {
 
   private static final long serialVersionUID = 3502991817151932971L;
 
   private String tagASName = GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME;
 
   private String outputASName, inputASName, textTagName;
-
-  private ResourceReference configURL;
 
   private Boolean copyAnnotations, transferAllUnlessFound;
 
@@ -70,7 +72,7 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
   Map<String, Mapping> mappings = new HashMap<String, Mapping>();
 
   @Override
-  public Resource init() throws ResourceInstantiationException {
+  public Resource init() throws ResourceInstantiationException {    
     return this;
   }
 
@@ -85,33 +87,7 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
 
     mappings.clear();
 
-    // TODO clean this up so we don't have to repeat ourselves
-    if(configURL != null) {
-
-      BufferedReader in = null;
-      try {
-        in = new BomStrippingInputStreamReader(configURL
-                .openStream());
-
-        String line = in.readLine();
-        while(line != null) {
-          if(!line.trim().equals("")) {
-            String[] data = line.split("=", 2);
-            String oldName = data[0].trim();
-            String newName = data.length == 2 ? data[1].trim() : null;
-            mappings.put(oldName, new Mapping(oldName, newName));
-          }
-          line = in.readLine();
-        }
-      }
-      catch(IOException ioe) {
-        ioe.printStackTrace();
-      }
-      finally {
-        IOUtils.closeQuietly(in);
-      }
-    }
-    else if(annotationTypes != null) {
+    if(annotationTypes != null) {
       for(String type : annotationTypes) {
         String[] data = type.split("=", 2);
         String oldName = data[0].trim();
@@ -250,29 +226,11 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
 
   @RunTime
   @Optional
-  @CreoleParameter(comment="The annotation types to transfer, leave blank for all types")
+  @CreoleParameter(comment = "The annotation types to transfer, leave blank for all types")
   public void setAnnotationTypes(List<String> newTypes) {
     annotationTypes = newTypes;
   }
-
-  public void setConfigURL(ResourceReference url) {
-    configURL = url;
-  }
   
-  @Deprecated
-  public void setConfigURL(URL url) {
-    try {
-      this.setConfigURL(new ResourceReference(url));
-    } catch (URISyntaxException e) {
-      throw new RuntimeException("Error converting URL to ResourceReference", e);
-    }
-  }
-
-
-  public ResourceReference getConfigURL() {
-    return configURL;
-  }
-
   public Boolean getCopyAnnotations() {
     return this.copyAnnotations;
   }
@@ -316,5 +274,52 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser {
       }
       return result.toString();
     }
+  }
+
+  @Override
+  public List<Action> getActions() {
+
+    Action action = new AbstractAction("Import Annotation Mapping...") {
+
+      private static final long serialVersionUID = -9114664159904960511L;
+
+      @Override
+      public void actionPerformed(ActionEvent arg0) {
+        
+        XJFileChooser fileChooser = MainFrame.getFileChooser();
+        fileChooser.setAcceptAllFileFilterUsed(true);
+        fileChooser.setDialogTitle("Import Annotation Mapping...");
+        //.showOpenDialog(MainFrame.getInstance());
+        
+        if (fileChooser.showOpenDialog(MainFrame.getInstance()) != XJFileChooser.APPROVE_OPTION) return;
+        
+        SerialControllerEditor.clearAllSelections();
+        
+        // TODO Auto-generated method stub
+        try (BufferedReader in =
+            new BomStrippingInputStreamReader(fileChooser.getSelectedFile().toURI().toURL().openStream())) {
+
+          List<String> loaded = new ArrayList<String>();
+          
+          String line = in.readLine();
+          while(line != null) {
+            if(!line.trim().equals("")) {
+              //String[] data = line.split("=", 2);
+              //String oldName = data[0].trim();
+              //String newName = data.length == 2 ? data[1].trim() : null;
+              //mappings.put(oldName, new Mapping(oldName, newName));
+              loaded.add(line.trim());
+            }
+            line = in.readLine();
+          }
+          
+          setAnnotationTypes(loaded);
+        } catch(IOException ioe) {
+          ioe.printStackTrace();
+        }
+      }
+    };
+    
+    return Collections.singletonList(action);    
   }
 }
