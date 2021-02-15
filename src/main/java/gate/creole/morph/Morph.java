@@ -6,8 +6,9 @@ import java.net.URISyntaxException;
 import java.net.URL;
 import java.util.Iterator;
 
-import org.apache.log4j.Level;
-import org.apache.log4j.Logger;
+import org.slf4j.Logger;
+import org.slf4j.LoggerFactory;
+import org.slf4j.event.Level;
 
 /*
  *  Morph.java
@@ -97,8 +98,8 @@ public class Morph
   }
   protected Boolean failOnMissingInputAnnotations = false;
   
-  protected Logger logger = Logger.getLogger(this.getClass().getName());  
-  
+  protected Logger logger = LoggerFactory.getLogger(this.getClass().getName());  
+
   /** Default Constructor */
   public Morph() {
   }
