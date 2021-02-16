@@ -190,12 +190,10 @@ public class ConfigurableExporter extends AbstractLanguageAnalyser {
         "No value provided for the configFileURL parameter");
     
     String strLine = null;
-    try {
-      BufferedReader in =
-          new BufferedReader(new InputStreamReader(configFileURL.openStream()));
+    try (BufferedReader in =
+          new BufferedReader(new InputStreamReader(configFileURL.openStream()))){
       if((strLine = in.readLine()) != null) {
         int upto = 0;
-        int thisSlot = 0;
         while(upto < strLine.length()) {
           int startAnnoName = strLine.indexOf("{", upto);
           int endAnnoName = strLine.indexOf("}", upto);
