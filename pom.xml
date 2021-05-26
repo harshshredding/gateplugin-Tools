@@ -15,7 +15,7 @@
 	<!-- this is the description of this plugin -->
 	<groupId>uk.ac.gate.plugins</groupId>
 	<artifactId>tools</artifactId>
-	<version>9.1-SNAPSHOT</version>
+	<version>9.0.1</version>
 	
 	<name>Tools</name>
 	<description>A selection of processing resources commonly used to extend ANNIE</description>
@@ -54,7 +54,7 @@
 		<dependency>
 			<groupId>uk.ac.gate.plugins</groupId>
 			<artifactId>annie</artifactId>
-			<version>9.0</version>
+			<version>9.1</version>
 			<scope>provided</scope>
 		</dependency>
 
