@@ -8,10 +8,18 @@
 		<groupId>uk.ac.gate</groupId>
 		<artifactId>gate-plugin-base</artifactId>
 		<!-- this should be the version of GATE you wish to build against -->
-		<version>9.0</version>
+		<version>9.0.1</version>
 		<relativePath></relativePath>
-	</parent>	
-	
+	</parent>
+
+	<properties>
+		<!-- ... if we want we could allow loading into an earlier version,
+		     but note that setting this lower than 8.6-SNAPSHOT causes some
+		     issues around the plugins being loaded uner test and the creole
+		     dependency graphs not being accurate. -->
+		<gate-core.version>9.0</gate-core.version>
+	</properties>
+
 	<!-- this is the description of this plugin -->
 	<groupId>uk.ac.gate.plugins</groupId>
 	<artifactId>tools</artifactId>
