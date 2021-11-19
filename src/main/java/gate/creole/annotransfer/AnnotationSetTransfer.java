@@ -59,7 +59,7 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser implements A
 
   private static final long serialVersionUID = 3502991817151932971L;
 
-  private String tagASName = GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME;
+  private String tagASName;
 
   private String outputASName, inputASName, textTagName;
 
@@ -175,12 +175,9 @@ public class AnnotationSetTransfer extends AbstractLanguageAnalyser implements A
 
   @RunTime
   @Optional
-  @CreoleParameter(comment="The name of the annotation set that contains textTagName")
+  @CreoleParameter(comment="The name of the annotation set that contains textTagName", defaultValue = GateConstants.ORIGINAL_MARKUPS_ANNOT_SET_NAME)
   public void setTagASName(String newTagASName) {
-    // if given an empty string, set to the default set
-    if("".equals(newTagASName))
-      tagASName = null;
-    else tagASName = newTagASName;
+    tagASName = newTagASName;
   }
 
   public String getTagASName() {
