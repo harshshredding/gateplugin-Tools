@@ -72,100 +72,100 @@ import javax.swing.SwingUtilities;
 
 
 /**
-  * The SyntaxTreeViewer is capable of showing and editing utterances (fancy
-  * name for sentences) and the
-  * attached syntax trees. It works by taking an utterance and all Token
-  * annotations and constructs the text. Then it also gets all SyntaxTreeNode
-  * annotations and builds and shows the syntac tree for that utterance. The
-  * leaves of the tree are the tokens, which constitute the utterance.
-  *
-  * It is possible to configure the annotation types that are used by the
-  * viewer. The textAnnotationType property specifies the type
-  * of annotation which is used to denote the utterance (sentence).
-  * In GATE, the value of this property is not set directly, but is derived
-  * from the VR configuration information from creole.xml (explained below).
-  *
-  * The treeNodeAnnotationType is the name of the
-  * annotations which encode the SyntaxTreeNodes; default - SyntaxTreeNode.
-  * To change when part of GATE, modify the &lt;PARAMETER&gt; setting of the
-  * TreeViewer entry in creole.xml. Similarly, one can change which annotation
-  * is used for chunking the utterance. By default, it is Token, which is also
-  * specified in creole.xml as a parameter in the treeviewer entry.
-  *
-  * The component assumes that the annotations of type treeNodeAnnotationType have
-  * features called: cat with a value String; consists which is a List either
-  * empty or with annotation ids of the node's children; and optionally
-  * text which contains
-  * the text covered by this annotation. The component will work fine even
-  * without the last feature. Still when it creates annotations,
-  * these will have this feature added.
-  *
-  *
-  * Newly added tree nodes to the tree are added to the document
-  * as annotations and deleted nodes are automatically deleted from the document
-  * only after OK is chosen in the dialog. Cancel does not make any changes
-  * permanent.
-  *
-  * Configuring the viewer in GATE
-  * The viewer is configured in creole.xml. The default entry is:
-  * <PRE>
-  *   &lt;RESOURCE&gt;
-  *     &lt;NAME&gt;Syntax tree viewer&lt;/NAME&gt;
-  *     &lt;CLASS&gt;gate.gui.SyntaxTreeViewer&lt;/CLASS&gt;
-  *     &lt;!-- type values can be  "large" or "small"--&gt;
-  *     &lt;GUI&gt;
-  *       &lt;MAIN_VIEWER/&gt;
-  *       &lt;ANNOTATION_TYPE_DISPLAYED&gt;Sentence&lt;/ANNOTATION_TYPE_DISPLAYED&gt;
-  *       &lt;PARAMETER NAME="treeNodeAnnotationType" DEFAULT="SyntaxTreeNode"
-  *                  RUNTIME="false" OPTIONAL="true"&gt;java.lang.String
-  *       &lt;/PARAMETER&gt;
-  *       &lt;PARAMETER NAME="tokenType" DEFAULT="Token" RUNTIME="false"
-  *                  OPTIONAL="true"&gt;java.lang.String
-  *       &lt;/PARAMETER&gt;
-  *     &lt;/GUI&gt;
-  *   &lt;/RESOURCE&gt;
-  * </PRE>
-  *
-  * The categories that appear in the menu for manual annotation are determined
-  * from SyntaxTreeViewerSchema.xml. If you want to change the default set,
-  * you must edit this file and update your Gate jar accordingly (e.g., by
-  * recompilation. This does not affect the categories of SyntaxTreeNode
-  * annotations, which have been created automatically by some other process,
-  * e.g., a parser PR.
-  *
-  * 
-  * If used outside GATE,
-  * in order to have appropriate behaviour always put this component inside a
-  * scroll pane or something similar that provides scrollers.
-  * Example code:
-  * <PRE>
-  *  JScrollPane scroller = new JScrollPane(syntaxTreeViewer1);
-  *  scroller.setPreferredSize(syntaxTreeViewer1.getPreferredSize());
-  *  frame.getContentPane().add(scroller, BorderLayout.CENTER);
-  * </PRE>
-  *
-  *
-  * The default way is to pass just one annotation of type textAnnotationType
-  * which corresponds to the entire sentence or utterance to be annotated with
-  * syntax tree information. Then the viewer automatically tokenises it
-  * (by obtaining the relevant token annotations) and creates the leaves.
-  *
-  * To create a new annotation, use setSpan, instead of setAnnotation.
-  *
-  * In either
-  * case, you must call setTarget first, because that'll provide the viewer
-  * with the document's annotation set, from where it can obtain the token
-  * annotations.
-  */
+ * The SyntaxTreeViewer is capable of showing and editing utterances (fancy
+ * name for sentences) and the
+ * attached syntax trees. It works by taking an utterance and all Token
+ * annotations and constructs the text. Then it also gets all DependencyTreeNode
+ * annotations and builds and shows the syntac tree for that utterance. The
+ * leaves of the tree are the tokens, which constitute the utterance.
+ *
+ * It is possible to configure the annotation types that are used by the
+ * viewer. The textAnnotationType property specifies the type
+ * of annotation which is used to denote the utterance (sentence).
+ * In GATE, the value of this property is not set directly, but is derived
+ * from the VR configuration information from creole.xml (explained below).
+ *
+ * The treeNodeAnnotationType is the name of the
+ * annotations which encode the DependencyTreeNodes; default - DependencyTreeNode.
+ * To change when part of GATE, modify the &lt;PARAMETER&gt; setting of the
+ * TreeViewer entry in creole.xml. Similarly, one can change which annotation
+ * is used for chunking the utterance. By default, it is Token, which is also
+ * specified in creole.xml as a parameter in the treeviewer entry.
+ *
+ * The component assumes that the annotations of type treeNodeAnnotationType have
+ * features called: cat with a value String; consists which is a List either
+ * empty or with annotation ids of the node's children; and optionally
+ * text which contains
+ * the text covered by this annotation. The component will work fine even
+ * without the last feature. Still when it creates annotations,
+ * these will have this feature added.
+ *
+ *
+ * Newly added tree nodes to the tree are added to the document
+ * as annotations and deleted nodes are automatically deleted from the document
+ * only after OK is chosen in the dialog. Cancel does not make any changes
+ * permanent.
+ *
+ * Configuring the viewer in GATE
+ * The viewer is configured in creole.xml. The default entry is:
+ * <PRE>
+ *   &lt;RESOURCE&gt;
+ *     &lt;NAME&gt;Syntax tree viewer&lt;/NAME&gt;
+ *     &lt;CLASS&gt;gate.gui.SyntaxTreeViewer&lt;/CLASS&gt;
+ *     &lt;!-- type values can be  "large" or "small"--&gt;
+ *     &lt;GUI&gt;
+ *       &lt;MAIN_VIEWER/&gt;
+ *       &lt;ANNOTATION_TYPE_DISPLAYED&gt;Sentence&lt;/ANNOTATION_TYPE_DISPLAYED&gt;
+ *       &lt;PARAMETER NAME="treeNodeAnnotationType" DEFAULT="DependencyTreeNode"
+ *                  RUNTIME="false" OPTIONAL="true"&gt;java.lang.String
+ *       &lt;/PARAMETER&gt;
+ *       &lt;PARAMETER NAME="tokenType" DEFAULT="Token" RUNTIME="false"
+ *                  OPTIONAL="true"&gt;java.lang.String
+ *       &lt;/PARAMETER&gt;
+ *     &lt;/GUI&gt;
+ *   &lt;/RESOURCE&gt;
+ * </PRE>
+ *
+ * The categories that appear in the menu for manual annotation are determined
+ * from SyntaxTreeViewerSchema.xml. If you want to change the default set,
+ * you must edit this file and update your Gate jar accordingly (e.g., by
+ * recompilation. This does not affect the categories of DependencyTreeNode
+ * annotations, which have been created automatically by some other process,
+ * e.g., a parser PR.
+ *
+ *
+ * If used outside GATE,
+ * in order to have appropriate behaviour always put this component inside a
+ * scroll pane or something similar that provides scrollers.
+ * Example code:
+ * <PRE>
+ *  JScrollPane scroller = new JScrollPane(syntaxTreeViewer1);
+ *  scroller.setPreferredSize(syntaxTreeViewer1.getPreferredSize());
+ *  frame.getContentPane().add(scroller, BorderLayout.CENTER);
+ * </PRE>
+ *
+ *
+ * The default way is to pass just one annotation of type textAnnotationType
+ * which corresponds to the entire sentence or utterance to be annotated with
+ * syntax tree information. Then the viewer automatically tokenises it
+ * (by obtaining the relevant token annotations) and creates the leaves.
+ *
+ * To create a new annotation, use setSpan, instead of setAnnotation.
+ *
+ * In either
+ * case, you must call setTarget first, because that'll provide the viewer
+ * with the document's annotation set, from where it can obtain the token
+ * annotations.
+ */
 
 @SuppressWarnings("serial")
-@CreoleResource(name = "Syntax Tree Viewer", comment = "Viewer for syntax trees generated by a parser.", helpURL = "http://gate.ac.uk/userguide/sec:parsers:supple:treeviewer", mainViewer = true, annotationTypeDisplayed = "Sentence")
+@CreoleResource(name = "Dependency Tree Viewer", comment = "Viewer for dependency trees generated by a parser.", helpURL = "http://gate.ac.uk/userguide/sec:parsers:supple:treeviewer", mainViewer = true, annotationTypeDisplayed = "Sentence")
 public class SyntaxTreeViewer extends AbstractVisualResource
-    implements  Scrollable, ActionListener, MouseListener,
-                AnnotationVisualResource {
+        implements  Scrollable, ActionListener, MouseListener,
+        AnnotationVisualResource {
 
   /** The annotation type used to encode each tree node*/
-  public static final String TREE_NODE_ANNOTATION_TYPE = "SyntaxTreeNode";
+  public static final String TREE_NODE_ANNOTATION_TYPE = "DependencyTreeNode";
   /** The name of the feature that encodes the tree node's category information */
   public static final String NODE_CAT_FEATURE_NAME = "cat";
   /** The name of the feature that encodes the subtree annotations */
@@ -176,7 +176,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   protected boolean laidOut = false;
 
   // display all buttons x pixels apart horizontally
-  protected int horizButtonGap = 5;
+  protected int horizButtonGap = 50;
 
   // display buttons at diff layers x pixels apart vertically
   protected int vertButtonGap = 50;
@@ -195,6 +195,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
   // the HashSet with the coordinates of the lines to draw
   Set<Coordinates> lines = new HashSet<Coordinates>();
+
+  Map<Integer,Integer> tokenToX = new HashMap<>();
 
   // The utterance to be annotated as a sentence. It's not used if the tree
   // is passed
@@ -311,10 +313,10 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   // Methods required by AnnotationVisualResource
 
   /**
-    * Used when the viewer/editor has to display/edit an existing annotation
-    * @param ann the annotation to be displayed or edited. If ann is null then
-    * the method simply returns
-    */
+   * Used when the viewer/editor has to display/edit an existing annotation
+   * @param ann the annotation to be displayed or edited. If ann is null then
+   * the method simply returns
+   */
   @Override
   public void editAnnotation(Annotation ann, AnnotationSet set){
     if (ann == null || set == null) return;
@@ -370,9 +372,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     return true;
   }
 
-  
+
   /**
-   * Returns <tt>true</tt>. 
+   * Returns <tt>true</tt>.
    */
   @Override
   public boolean editingFinished() {
@@ -404,12 +406,12 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   }
 
   /**
-    * Checks whether this viewer/editor can handle a specific annotation type.
-    * @param annotationType represents the annotation type being questioned.If
-    * it is <b>null</b> then the method will return false.
-    * @return true if the SchemaAnnotationEditor can handle the annotationType
-    * or false otherwise.
-    */
+   * Checks whether this viewer/editor can handle a specific annotation type.
+   * @param annotationType represents the annotation type being questioned.If
+   * it is <b>null</b> then the method will return false.
+   * @return true if the SchemaAnnotationEditor can handle the annotationType
+   * or false otherwise.
+   */
   @Override
   public boolean canDisplayAnnotationType(String annotationType){
     // Returns true only if the there is an AnnotationSchema with the same type
@@ -418,7 +420,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     boolean found = false;
 
     java.util.List<String> specificEditors = Gate.getCreoleRegister().
-                                     getAnnotationVRs(annotationType);
+            getAnnotationVRs(annotationType);
     Iterator<String> editorIter = specificEditors.iterator();
     while(editorIter.hasNext() && !found){
       String editorClass = editorIter.next();
@@ -446,7 +448,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
 
     final SyntaxTreeViewer syntaxTreeViewer1 =
-      new SyntaxTreeViewer("SyntaxTreeNode");
+      new SyntaxTreeViewer("DependencyTreeNode");
     //syntaxTreeViewer1.setUnicodeSupportEnabled(true);
     //need to set the document here!!!!
 
@@ -462,7 +464,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     // intercept the closing event to shut the application
     frame.addWindowListener(new WindowAdapter() {
       public void windowClosing(WindowEvent e) {
-        AnnotationSet hs = doc.getAnnotations().get("SyntaxTreeNode");
+        AnnotationSet hs = doc.getAnnotations().get("DependencyTreeNode");
         if (hs != null && hs.size() > 0) {
           int k = 0;
           for (Iterator i = hs.iterator(); i.hasNext(); k++) {
@@ -505,9 +507,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
                       doc.getContent().toString().length()),"utterance", attrs);
 */
     /* Integer id1 = doc.getAnnotations().add(new Long(0), new Long(4),
-                              "SyntaxTreeNode", attrs1);
+                              "DependencyTreeNode", attrs1);
     Integer id2 = doc.getAnnotations().add(new Long(5), new Long(7),
-                              "SyntaxTreeNode", attrs2);
+                              "DependencyTreeNode", attrs2);
 
     FeatureMap attrs3 = Factory.newFeatureMap();
     attrs3.put("cat", "VP");
@@ -517,13 +519,13 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     consists.add(id2);
     attrs3.put("consists", consists);
     doc.getAnnotations().add(new Long(0), new Long(7),
-                                                  "SyntaxTreeNode", attrs3);
+                                                  "DependencyTreeNode", attrs3);
     */
 
 /*
     HashSet set = new HashSet();
     set.add("utterance");
-    set.add("SyntaxTreeNode");
+    set.add("DependencyTreeNode");
     AnnotationSet annots = doc.getAnnotations().get(set);
     syntaxTreeViewer1.setTreeAnnotations(annots);
 
@@ -543,30 +545,30 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       Coordinates coords = i.next();
 
       g.drawLine( coords.getX1(),
-                  coords.getY1(),
-                  coords.getX2(),
-                  coords.getY2());
+              coords.getY1(),
+              coords.getX2(),
+              coords.getY2());
     }// for
   }// private void drawLines(Graphics g)
 
   @Override
   public Dimension getPreferredScrollableViewportSize() {
-        return getPreferredSize();
+    return getPreferredSize();
   }// public Dimension getPreferredScrollableViewportSize()
 
   @Override
   public int getScrollableUnitIncrement(Rectangle visibleRect,
-                                              int orientation, int direction) {
+                                        int orientation, int direction) {
     return maxUnitIncrement;
   }// public int getScrollableUnitIncrement
 
   @Override
   public int getScrollableBlockIncrement(Rectangle visibleRect,
-                                              int orientation, int direction) {
+                                         int orientation, int direction) {
     if (orientation == SwingConstants.HORIZONTAL)
-        return visibleRect.width - maxUnitIncrement;
+      return visibleRect.width - maxUnitIncrement;
     else
-        return visibleRect.height - maxUnitIncrement;
+      return visibleRect.height - maxUnitIncrement;
   }// public int getScrollableBlockIncrement
 
   @Override
@@ -590,9 +592,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   } //this_propertyChange
 
   /**
-    * Clear all buttons and tree nodes created because component is being
-    * re-initialised. Not sure it works perfectly.
-    */
+   * Clear all buttons and tree nodes created because component is being
+   * re-initialised. Not sure it works perfectly.
+   */
   private void clearAll() {
     lines.clear();
     this.removeAll();
@@ -602,8 +604,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   }
 
   /**
-    * Converts the annotations into treeNodes
-    */
+   * Converts the annotations into treeNodes
+   */
   private void annotations2Trees() {
     if (document == null) return;
 
@@ -614,7 +616,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     if (tempSet == null || tempSet.isEmpty())
       return;
     treeAnnotations = tempSet.get(utterance.getStartNode().getOffset(),
-                                  utterance.getEndNode().getOffset());
+            utterance.getEndNode().getOffset());
     if (treeAnnotations == null || treeAnnotations.isEmpty())
       return;
 
@@ -631,11 +633,11 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
       @SuppressWarnings("unchecked")
       java.util.List<Integer> children =
-        (java.util.List<Integer>) annot.getFeatures().get(NODE_CONSISTS_FEATURE_NAME);
+              (java.util.List<Integer>) annot.getFeatures().get(NODE_CONSISTS_FEATURE_NAME);
       //check if it's a leaf
       if (children == null ||
-          children.isEmpty())
-        {
+              children.isEmpty())
+      {
 
         STreeNode leaf = findLeaf(annot.getStartNode(), annot.getEndNode());
         if (leaf == null) {//not found
@@ -653,8 +655,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
         node.setUserObject(annot.getFeatures().get(NODE_CAT_FEATURE_NAME));
         nonTerminals.put(node.getID(), node);
         JButton parentButton = createCentralButton(node);
+        parentButton.setLocation(this.tokenToX.get((Integer) annot.getFeatures().get("TokenID")), (int)parentButton.getLocation().getY());
         addLines(node);
-
         //finally add to the processed annotations
         processed.put(annot.getId(), parentButton);
 
@@ -674,8 +676,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     selection.clear();
 
     this.scrollRectToVisible(new
-      Rectangle(0, getHeight()- (int) getVisibleRect().getHeight(),
-        (int) getVisibleRect().getWidth(), (int) getVisibleRect().getHeight()));
+            Rectangle(0, getHeight()- (int) getVisibleRect().getHeight(),
+            (int) getVisibleRect().getWidth(), (int) getVisibleRect().getHeight()));
   } //annotations2Trees
 
   @SuppressWarnings("unchecked")
@@ -684,7 +686,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     Vector<JButton> childrenButtons = new Vector<JButton>();
 
     java.util.List<Integer> children =
-      (java.util.List<Integer>) annot.getFeatures().get(NODE_CONSISTS_FEATURE_NAME);
+            (java.util.List<Integer>) annot.getFeatures().get(NODE_CONSISTS_FEATURE_NAME);
 
     for (Iterator<Integer> i = children.iterator(); i.hasNext(); ) {
       Integer childId = i.next();
@@ -701,10 +703,11 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
     selection = (Vector<JButton>) childrenButtons.clone();
     STreeNode parent = createParentNode(
-                          (String) annot.getFeatures().get(NODE_CAT_FEATURE_NAME),
-                          annot);
+            (String) annot.getFeatures().get(NODE_CAT_FEATURE_NAME),
+            annot);
     nonTerminals.put(parent.getID(), parent);
     JButton parentButton = createCentralButton(parent);
+    parentButton.setLocation(this.tokenToX.get((Integer) annot.getFeatures().get("TokenID")), (int)parentButton.getLocation().getY());
     addLines(parent);
 
     processed.put(annot.getId(), parentButton);
@@ -716,8 +719,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     for (Iterator<STreeNode> i = leaves.values().iterator(); i.hasNext(); ) {
       STreeNode node = i.next();
       if (node.getStart() == start.getOffset().intValue() &&
-          node.getEnd() == end.getOffset().intValue()
-         )
+              node.getEnd() == end.getOffset().intValue()
+      )
         return node;
     }
 
@@ -726,13 +729,13 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
 
   /**
-    * Converts the given utterances into a set of leaf nodes for annotation
-    */
+   * Converts the given utterances into a set of leaf nodes for annotation
+   */
   private void utterances2Trees() {
 
     if (! utterance.getType().equals(textAnnotationType)) {
       Out.println("Can't display annotations other than the specified type:" +
-                                                            textAnnotationType);
+              textAnnotationType);
       return;
     }
 
@@ -743,16 +746,16 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
     try {
       displayedString = currentSet.getDocument().getContent().getContent(
-                        utteranceStartOffset, utteranceEndOffset).toString();
+              utteranceStartOffset, utteranceEndOffset).toString();
     } catch (InvalidOffsetException ioe) {
       ioe.printStackTrace(Err.getPrintWriter());
     }
 
     AnnotationSet tokensAS = currentSet.get(tokenType, utteranceStartOffset,
-                                          utteranceEndOffset);
+            utteranceEndOffset);
     if (tokensAS == null || tokensAS.isEmpty()) {
       Out.println("TreeViewer warning: No annotations of type " + tokenType +
-                  "so cannot show or edit the text and the tree annotations.");
+              "so cannot show or edit the text and the tree annotations.");
       return;
     }
 
@@ -766,7 +769,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     java.util.List<Annotation> tokens = new ArrayList<Annotation>(tokensAS);
     //if no tokens to match, do nothing
     if (tokens.isEmpty())
-       return;
+      return;
     Collections.sort(tokens, new gate.util.OffsetComparator());
 
     //loop through the tokens
@@ -778,14 +781,14 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       String tokenText = "";
       try {
         tokenText = document.getContent().getContent(
-                        tokenBegin, tokenEnd).toString();
+                tokenBegin, tokenEnd).toString();
       } catch (InvalidOffsetException ioe) {
         ioe.printStackTrace(Err.getPrintWriter());
       }
 
       // create the leaf node
       STreeNode node =
-        new STreeNode(tokenBegin.longValue(), tokenEnd.longValue());
+              new STreeNode(tokenBegin.longValue(), tokenEnd.longValue());
 
       // make it a leaf
       node.setAllowsChildren(false);
@@ -797,6 +800,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       // add to hash table of leaves
       leaves.put(node.getID(), node);
 
+      tokenToX.put(tokenAnnot.getId(), buttonX);
       // create the corresponding button
       buttonX = createButton4Node(node, buttonX, buttonY);
 
@@ -852,10 +856,10 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   } // utterance2Trees
 
   /**
-    * Returns the X position where another button can start if necessary.
-    * To be used to layout only the leaf buttons. All others must be created
-    * central to their children using createCentralButton.
-    */
+   * Returns the X position where another button can start if necessary.
+   * To be used to layout only the leaf buttons. All others must be created
+   * central to their children using createCentralButton.
+   */
   private int createButton4Node(STreeNode node, int buttonX, int buttonY) {
 
     JButton button = new JButton((String) node.getUserObject());
@@ -864,7 +868,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
 //    FontMetrics fm = button.getFontMetrics(button.getFont());
 
-    
+
 //    int buttonWidth,
 //        buttonHeight;
 
@@ -876,17 +880,17 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 //                  + extraButtonWidth;
 //    buttonHeight = fm.getHeight() + button.getMargin().top +
 //                      button.getMargin().bottom;
-    
+
 //    buttonWidth = buttonSize.width;
 //    buttonHeight = buttonSize.height;
-    
+
 //    buttonY = buttonY - buttonHeight;
 
 //     Out.print("New Button X " + buttonX +
 //        "New Button Y" + buttonY);
 
 //    button.setBounds(buttonX, buttonY, buttonWidth, buttonHeight);
-    
+
     Dimension buttonSize = button.getPreferredSize();
     button.setSize(buttonSize);
     buttonY = buttonY - buttonSize.height;
@@ -913,15 +917,15 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 //    FontMetrics fm = button.getFontMetrics(button.getFont());
 
     int buttonWidth,
-        buttonHeight,
-        buttonX = 0,
-        buttonY =0;
+            buttonHeight,
+            buttonX = 0,
+            buttonY =0;
 
     // Out.print("Button width " + b1.getWidth() + ";
     //    Button height " + b1.getHeight());
 
     Dimension buttonSize = button.getPreferredSize();
-    
+
 //    buttonWidth = fm.stringWidth(button.getText())
 //                  + button.getMargin().left + button.getMargin().right
 //                  + extraButtonWidth;
@@ -930,7 +934,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
     buttonWidth = buttonSize.width;
     buttonHeight = buttonSize.height;
-    
+
     int left = this.getWidth(), right =0 , top = this.getHeight();
 
     // determine the left, right, top
@@ -979,9 +983,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     for (Iterator<JButton> i = buttons.values().iterator(); i.hasNext(); ) {
       JButton button = i.next();
       button.setBounds(		button.getX(),
-                          button.getY() + offset,
-                          button.getWidth(),
-                          button.getHeight());
+              button.getY() + offset,
+              button.getWidth(),
+              button.getHeight());
     } // for loop through buttons
 
     for (Iterator<Coordinates> k = lines.iterator(); k.hasNext(); ) {
@@ -1022,9 +1026,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
         // last create the annotation; should always come last!
         parent.createAnnotation(  document,
-                                  treeNodeAnnotationType,
-                                  displayedString,
-                                  utteranceStartOffset.longValue());
+                treeNodeAnnotationType,
+                displayedString,
+                utteranceStartOffset.longValue());
         nonTerminals.put(parent.getID(), parent);
 
         // create new button positioned centrally above the leaf
@@ -1081,12 +1085,12 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 
     //check if CTRL or Shift is pressed and if not, clear the selection
     if ((! (e.isControlDown() || e.isShiftDown()))
-         && SwingUtilities.isLeftMouseButton(e))
+            && SwingUtilities.isLeftMouseButton(e))
       clearSelection();
 
     //and select the current node
     if (SwingUtilities.isLeftMouseButton(e))
-    //if (e.getModifiers() == e.BUTTON1_MASK)
+      //if (e.getModifiers() == e.BUTTON1_MASK)
       selectNode(e);
 
 
@@ -1135,11 +1139,11 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       if (leaf.getParent() != null) {
         clearSelection();
         JOptionPane.showMessageDialog(
-          this,
-          "Node already annotated. To delete the existing annotation, " +
-          "select it and press <DEL>.",
-          "Syntax Tree Viewer message",
-          JOptionPane.INFORMATION_MESSAGE);
+                this,
+                "Node already annotated. To delete the existing annotation, " +
+                        "select it and press <DEL>.",
+                "Syntax Tree Viewer message",
+                JOptionPane.INFORMATION_MESSAGE);
         return;
       }
 
@@ -1155,9 +1159,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       if ( nonTerminals.get(id).getParent() != null) {
         clearSelection();
         JOptionPane.showMessageDialog(this, "Node already annotated. To delete"+
-                          " the existing annotation, select it and press <DEL>.",
-                          "Syntax Tree Viewer message",
-                          JOptionPane.INFORMATION_MESSAGE);
+                        " the existing annotation, select it and press <DEL>.",
+                "Syntax Tree Viewer message",
+                JOptionPane.INFORMATION_MESSAGE);
         return;  //and do nothing if so!
       }
 
@@ -1183,10 +1187,10 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       //I create it a rect but it will in fact be used as x1, y1, x2, y2 for the
       //draw line. see drawLines.
       Coordinates coords = new Coordinates(
-                                nbX,
-                                nbY,
-                                selButton.getX() + selButton.getWidth()/2,
-                                selButton.getY());
+              nbX,
+              nbY,
+              selButton.getX() + selButton.getWidth()/2,
+              selButton.getY());
 
       lines.add(coords);
     }
@@ -1210,7 +1214,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     //fetch the valid categories from the stereotype
     CreoleRegister creoleReg = Gate.getCreoleRegister();
     java.util.List<LanguageResource> currentAnnotationSchemaList =
-                      creoleReg.getLrInstances("gate.creole.AnnotationSchema");
+            creoleReg.getLrInstances("gate.creole.AnnotationSchema");
     if (currentAnnotationSchemaList.isEmpty()) return;
 
     Iterator<LanguageResource> iter = currentAnnotationSchemaList.iterator();
@@ -1222,7 +1226,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
         FeatureSchema categories = annotSchema.getFeatureSchema(NODE_CAT_FEATURE_NAME);
         //iterate through all categories
         for (Iterator<Object> i =
-                categories.getPermittedValues().iterator(); i.hasNext(); ) {
+             categories.getPermittedValues().iterator(); i.hasNext(); ) {
 
           JMenuItem menuItem = new JMenuItem( (String) i.next() );
           menuItem.addActionListener(this);
@@ -1235,14 +1239,14 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     //if we don't have a schema, issue a warning
     if (! found)
       Out.println("Warning: You need to define an annotation schema for " +
-                  treeNodeAnnotationType +
-                  " in order to be able to add such annotations.");
+              treeNodeAnnotationType +
+              " in order to be able to add such annotations.");
 
   } // fillCategoriesMenu
 
   /**
-    * Sets the action commands of all menu items to the specified command
-    */
+   * Sets the action commands of all menu items to the specified command
+   */
   private void setMenuCommands(JPopupMenu menu, String command) {
     for (int i = 0; i < menu.getComponentCount() ; i++) {
       JMenuItem item = (JMenuItem) menu.getComponent(i);
@@ -1252,8 +1256,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   } // setMenuCommands
 
   /**
-    * Create a parent node for all selected non-terminal nodes
-    */
+   * Create a parent node for all selected non-terminal nodes
+   */
   protected STreeNode createParentNode(String text) {
     STreeNode  parentNode = new STreeNode();
 
@@ -1280,17 +1284,17 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     parentNode.setEnd(end);
     parentNode.setUserObject(text);
     parentNode.createAnnotation(document,
-                                treeNodeAnnotationType,
-                                displayedString,
-                                utteranceStartOffset.longValue());
+            treeNodeAnnotationType,
+            displayedString,
+            utteranceStartOffset.longValue());
 
 
     return parentNode;
   }
 
   /**
-    * Create a parent node for all selected non-terminal nodes
-    */
+   * Create a parent node for all selected non-terminal nodes
+   */
   protected STreeNode createParentNode(String text, Annotation annot) {
     STreeNode  parentNode = new STreeNode(annot);
 
@@ -1319,9 +1323,9 @@ public class SyntaxTreeViewer extends AbstractVisualResource
     if (e.getSource() instanceof JButton) {
       JButton source = (JButton) e.getSource();
 
-        selection.add(source);
-        buttonBackground = source.getBackground();
-        source.setBackground(selectedNodeColor);
+      selection.add(source);
+      buttonBackground = source.getBackground();
+      source.setBackground(selectedNodeColor);
     }
   }
 
@@ -1387,8 +1391,8 @@ public class SyntaxTreeViewer extends AbstractVisualResource
   }
 
   /**
-    * recalculates all lines from that node to all its children
-    */
+   * recalculates all lines from that node to all its children
+   */
   private void recalculateLines(STreeNode node) {
     Integer id = node.getID();
     JButton button = buttons.get(id);
@@ -1402,10 +1406,10 @@ public class SyntaxTreeViewer extends AbstractVisualResource
       JButton subButton = buttons.get(sid);
 
       Coordinates coords = new Coordinates(
-                                bX,
-                                bY,
-                                subButton.getX() + subButton.getWidth()/2,
-                                subButton.getY());
+              bX,
+              bY,
+              subButton.getX() + subButton.getWidth()/2,
+              subButton.getY());
 
       lines.add(coords);
     }
@@ -1424,7 +1428,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 */
 
   @Optional
-  @CreoleParameter(defaultValue="SyntaxTreeNode")
+  @CreoleParameter(defaultValue="DependencyTreeNode")
   public void setTreeNodeAnnotationType(String newTreeNodeAnnotationType) {
     treeNodeAnnotationType = newTreeNodeAnnotationType;
   }
@@ -1468,46 +1472,46 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 */
 
   private static class FocusButton extends JButton {
-  
+
     public FocusButton(String text) {
       super(text);
     }
-  
+
     @SuppressWarnings("unused")
     public FocusButton() {
       super();
     }
-  
+
     @SuppressWarnings("unused")
     public FocusButton(Icon icon) {
       super(icon);
     }
-  
+
     @SuppressWarnings("unused")
     public FocusButton(String text, Icon icon) {
       super(text, icon);
     }// public FocusButton
-    
-  //  public boolean isManagingFocus() {
-  //    return true;
-  //  }// public boolean isManagingFocus()
-  
+
+    //  public boolean isManagingFocus() {
+    //    return true;
+    //  }// public boolean isManagingFocus()
+
     @Override
     public void processComponentKeyEvent(KeyEvent e) {
       super.processComponentKeyEvent(e);
-  
+
       //I need that cause I get all events here, so I only want to process
       //when it's a release event. The reason is that for keys like <DEL>
       //key_typed never happens
       if (e.getID() != KeyEvent.KEY_RELEASED)
         return;
-  
+
       if (e.getKeyCode() == KeyEvent.VK_DELETE) {
         SyntaxTreeViewer viewer = (SyntaxTreeViewer) ((JButton) e.getSource()).getParent();
         viewer.removeNode((JButton) e.getSource());
       }
     }// public void processComponentKeyEvent(KeyEvent e)
-  
+
   }
 }// class SyntaxTreeViewer
 
@@ -1561,7 +1565,7 @@ public class SyntaxTreeViewer extends AbstractVisualResource
 // API (cancelAction() and setSpan new parameter).
 //
 // Also updated the TreeViewer, so now it can be used to edit and view
-// Sentence annotations and the SyntaxTreeNodes associated with them.
+// Sentence annotations and the DependencyTreeNodes associated with them.
 // So if you have trees, it'll show them, if not, it'll help you build them.
 //
 // Revision 1.16  2001/04/09 10:36:36  oana

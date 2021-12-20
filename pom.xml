@@ -1,7 +1,7 @@
 
 <project xmlns="http://maven.apache.org/POM/4.0.0" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
-	xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
-	
+		 xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+
 	<modelVersion>4.0.0</modelVersion>
 
 	<parent>
@@ -21,12 +21,12 @@
 	</properties>
 
 	<!-- this is the description of this plugin -->
-	<groupId>uk.ac.gate.plugins</groupId>
-	<artifactId>tools</artifactId>
+	<groupId>com.harsh.plugins</groupId>
+	<artifactId>tools-dependency-viewer</artifactId>
 	<version>9.1-SNAPSHOT</version>
-	
-	<name>Tools</name>
-	<description>A selection of processing resources commonly used to extend ANNIE</description>
+
+	<name>Viewer: Dependency</name>
+	<description>A graphical viewer for the stanford dependency parse</description>
 
 	<licenses>
 		<license>
@@ -40,7 +40,7 @@
 		<name>GATE</name>
 		<url>http://gate.ac.uk</url>
 	</organization>
-	
+
 	<developers>
 		<developer>
 			<id>gate-team</id>
@@ -56,7 +56,7 @@
 	</scm>
 
 	<dependencies>
-		<!-- add any other libraries your plugin depends on. Any other GATE plugins 
+		<!-- add any other libraries your plugin depends on. Any other GATE plugins
 			you depend on at compile time should use the provided scope -->
 
 		<dependency>
@@ -65,7 +65,26 @@
 			<version>9.2-SNAPSHOT</version>
 			<scope>provided</scope>
 		</dependency>
+		<dependency>
+			<groupId>uk.ac.gate.plugins</groupId>
+			<artifactId>stanford-corenlp</artifactId>
+			<version>8.5.1</version>
+		</dependency>
 
 	</dependencies>
-
+	<build>
+		<plugins>
+			<!-- your plugins, including or not maven-resource-plugin -->
+		</plugins>
+		<resources>
+			<resource>
+				<filtering>true</filtering><!-- if it is neccessary -->
+				<directory>${project.basedir}</directory><!-- from -->
+				<targetPath>${project.build.directory}</targetPath><!-- to -->
+				<includes><!-- what -->
+					<include>creole.xml</include>
+				</includes>
+			</resource>
+		</resources>
+	</build>
 </project>

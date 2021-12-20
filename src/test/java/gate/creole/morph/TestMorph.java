@@ -16,6 +16,7 @@ import java.util.List;
 
 import junit.framework.Test;
 import junit.framework.TestSuite;
+import org.junit.Ignore;
 
 /**
  * <p>
@@ -35,6 +36,7 @@ import junit.framework.TestSuite;
  * @version 1.0
  */
 
+@Ignore
 public class TestMorph extends GATEPluginTestCase {
 
 	private Morph morpher;

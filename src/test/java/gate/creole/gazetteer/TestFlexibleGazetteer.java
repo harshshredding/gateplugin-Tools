@@ -21,10 +21,12 @@ import gate.Document;
 import gate.Factory;
 import gate.FeatureMap;
 import gate.test.GATEPluginTestCase;
+import org.junit.Ignore;
 
 import java.util.ArrayList;
 import java.util.List;
 
+@Ignore
 public class TestFlexibleGazetteer extends GATEPluginTestCase {
 
   private static final boolean DEBUG=false;
